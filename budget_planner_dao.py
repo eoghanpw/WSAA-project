@@ -34,6 +34,19 @@ def get_all_expenses():
         return cursor.fetchall()
 
 
+# Fuction to get expense by id
+def get_expense_by_id(id):
+    conn = connect()
+    sql = """
+    SELECT * FROM expenses
+    WHERE expense_id = %s
+    """
+    values = id
+    with conn.cursor() as cursor:
+        cursor.execute(sql, values)
+        return cursor.fetchall()
+
+
 # Fuction to search expenses by date
 def search_expenses_by_date(values):
     conn = connect()
@@ -82,7 +95,7 @@ def update_expense(id, expense):
         return expense
 
 
-# Function to update expense
+# Function to delete expense
 def delete_expense(id):
     conn = connect()
     sql = """

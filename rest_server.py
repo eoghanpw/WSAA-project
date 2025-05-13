@@ -22,7 +22,8 @@ def get_all_expenses():
 # Search expense by id
 @app.route("/expenses/<int:id>", methods=["GET"])
 def search_expenses(id):
-    return f"Searching expense {id}"
+    # return f"Searching expense {id}"
+    return jsonify(sql.get_expense_by_id(id))
 
 
 # Create expense
