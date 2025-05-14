@@ -25,7 +25,10 @@ def get_all_expenses():
     conn = connect()
     # SQL query
     sql = """
-    SELECT * FROM expenses
+    SELECT * FROM expenses_data exp
+    INNER JOIN expense_tags tag
+    ON exp.expense_tag = tag.tag_id
+    ORDER BY exp.date
     """
     # Create cursor to run sql query
     with conn.cursor() as cursor:
@@ -38,8 +41,10 @@ def get_all_expenses():
 def get_expense_by_id(id):
     conn = connect()
     sql = """
-    SELECT * FROM expenses
-    WHERE expense_id = %s
+    SELECT * FROM expenses_data exp
+    INNER JOIN expense_tags tag
+    ON exp.expense_tag = tag.tag_id
+    WHERE exp.expense_id = %s
     """
     values = id
     with conn.cursor() as cursor:
@@ -47,16 +52,34 @@ def get_expense_by_id(id):
         return cursor.fetchall()
 
 
-# Fuction to search expenses by date
-def search_expenses_by_date(values):
+# Fuction to get expenses by date
+def get_expenses_by_date(start_date, end_date):
     conn = connect()
     sql = """
-    SELECT * FROM expenses
-    WHERE date BETWEEN %s and %s
-    ORDER BY date
+    SELECT * FROM expenses_data exp
+    INNER JOIN expense_tags tag
+    ON exp.expense_tag = tag.tag_id
+    WHERE exp.date BETWEEN %s and %s
+    ORDER BY exp.date
     """
+    values = (start_date, end_date)
     with conn.cursor() as cursor:
         cursor.execute(sql, values)
+        return cursor.fetchall()
+
+
+# Fuction to search expenses by description
+def search_expenses_by_desc(desc):
+    conn = connect()
+    sql = """
+    SELECT * FROM expenses_data exp
+    INNER JOIN expense_tags tag
+    ON exp.expense_tag = tag.tag_id
+    WHERE exp.description LIKE %s
+    ORDER BY exp.date
+    """
+    with conn.cursor() as cursor:
+        cursor.execute(sql, "%" + desc + "%")
         return cursor.fetchall()
 
 
@@ -64,10 +87,10 @@ def search_expenses_by_date(values):
 def add_new_expense(expense):
     conn = connect()
     sql = """
-    INSERT INTO expenses (date, description, expense_tag, cost)
+    INSERT INTO expenses_data (date, description, expense_tag, cost)
         VALUES (%s, %s, %s, %s)
     """
-    values = (expense.get("date"), expense.get("description").lower(),
+    values = (expense.get("date"), expense.get("description"),
               expense.get("expense_tag"), expense.get("cost"))
     with conn:
         cursor = conn.cursor()
@@ -82,11 +105,11 @@ def add_new_expense(expense):
 def update_expense(id, expense):
     conn = connect()
     sql = """
-    UPDATE expenses
+    UPDATE expenses_data
     SET date = %s, description = %s, expense_tag = %s, cost = %s
     WHERE expense_id = %s
     """
-    values = (expense.get("date"), expense.get("description").lower(),
+    values = (expense.get("date"), expense.get("description"),
               expense.get("expense_tag"), expense.get("cost"), id)
     with conn:
         cursor = conn.cursor()
@@ -99,7 +122,7 @@ def update_expense(id, expense):
 def delete_expense(id):
     conn = connect()
     sql = """
-    DELETE FROM expenses
+    DELETE FROM expenses_data
     WHERE expense_id = %s
     """
     values = (id)
