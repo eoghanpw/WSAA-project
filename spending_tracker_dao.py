@@ -20,15 +20,15 @@ def connect():
     return connection
 
 
-# Fuction to get all expenses
-def get_all_expenses():
+# Fuction to get all spending
+def get_all_spending():
     conn = connect()
     # SQL query
     sql = """
-    SELECT * FROM expenses_data exp
-    INNER JOIN expense_tags tag
-    ON exp.expense_tag = tag.tag_id
-    ORDER BY exp.date
+    SELECT * FROM spending_data data
+    INNER JOIN spending_tags tags
+    ON data.tag = tags.tag_id
+    ORDER BY data.date
     """
     # Create cursor to run sql query
     with conn.cursor() as cursor:
@@ -37,46 +37,47 @@ def get_all_expenses():
         return cursor.fetchall()
 
 
-# Fuction to get expense by id
-def get_expense_by_id(id):
+# Fuction to get spending by month
+def get_spending_by_month(month):
     conn = connect()
     sql = """
-    SELECT * FROM expenses_data exp
-    INNER JOIN expense_tags tag
-    ON exp.expense_tag = tag.tag_id
-    WHERE exp.expense_id = %s
+    SELECT * FROM spending_data data
+    INNER JOIN spending_tags tags
+    ON data.tag = tags.tag_id
+    WHERE MONTHNAME(data.date) = %s
+    ORDER BY data.date
     """
-    values = id
+    values = month
     with conn.cursor() as cursor:
         cursor.execute(sql, values)
         return cursor.fetchall()
 
 
-# Fuction to get expenses by date
-def get_expenses_by_date(start_date, end_date):
+# Fuction to get spending by tag
+def get_spending_by_tag(tag):
     conn = connect()
     sql = """
-    SELECT * FROM expenses_data exp
-    INNER JOIN expense_tags tag
-    ON exp.expense_tag = tag.tag_id
-    WHERE exp.date BETWEEN %s and %s
-    ORDER BY exp.date
+    SELECT * FROM spending_data data
+    INNER JOIN spending_tags tags
+    ON data.tag = tags.tag_id
+    WHERE data.tag = %s
+    ORDER BY data.date
     """
-    values = (start_date, end_date)
+    values = tag
     with conn.cursor() as cursor:
         cursor.execute(sql, values)
         return cursor.fetchall()
 
 
-# Fuction to search expenses by description
-def search_expenses_by_desc(desc):
+# Fuction to search spending by description
+def get_spending_by_desc(desc):
     conn = connect()
     sql = """
-    SELECT * FROM expenses_data exp
-    INNER JOIN expense_tags tag
-    ON exp.expense_tag = tag.tag_id
-    WHERE exp.description LIKE %s
-    ORDER BY exp.date
+    SELECT * FROM spending_data data
+    INNER JOIN spending_tags tags
+    ON data.tag = tags.tag_id
+    WHERE data.description LIKE %s
+    ORDER BY data.date
     """
     with conn.cursor() as cursor:
         cursor.execute(sql, "%" + desc + "%")
@@ -87,30 +88,30 @@ def search_expenses_by_desc(desc):
 def add_new_expense(expense):
     conn = connect()
     sql = """
-    INSERT INTO expenses_data (date, description, expense_tag, cost)
+    INSERT INTO spending_data (date, description, tag, cost)
         VALUES (%s, %s, %s, %s)
     """
     values = (expense.get("date"), expense.get("description"),
-              expense.get("expense_tag"), expense.get("cost"))
+              expense.get("tag"), expense.get("cost"))
     with conn:
         cursor = conn.cursor()
         cursor.execute(sql, values)
         conn.commit()
         new_id = cursor.lastrowid
-        expense["expense_id"] = new_id
+        expense["id"] = new_id
         return expense
 
 
 # Function to update expense
-def update_expense(id, expense):
+def update_expense(expense, id):
     conn = connect()
     sql = """
-    UPDATE expenses_data
-    SET date = %s, description = %s, expense_tag = %s, cost = %s
-    WHERE expense_id = %s
+    UPDATE spending_data
+    SET date = %s, description = %s, tag = %s, cost = %s
+    WHERE id = %s
     """
     values = (expense.get("date"), expense.get("description"),
-              expense.get("expense_tag"), expense.get("cost"), id)
+              expense.get("tag"), expense.get("cost"), id)
     with conn:
         cursor = conn.cursor()
         cursor.execute(sql, values)
@@ -122,12 +123,40 @@ def update_expense(id, expense):
 def delete_expense(id):
     conn = connect()
     sql = """
-    DELETE FROM expenses_data
-    WHERE expense_id = %s
+    DELETE FROM spending_data
+    WHERE id = %s
     """
-    values = (id)
+    values = id
     with conn:
         cursor = conn.cursor()
         cursor.execute(sql, values)
         conn.commit()
         return True
+
+
+# Fuction to get budget
+def get_budget():
+    conn = connect()
+    sql = """
+    SELECT * FROM budget
+    ORDER BY budget_id
+    """
+    with conn.cursor() as cursor:
+        cursor.execute(sql)
+        return cursor.fetchall()
+
+
+# Function to update budget
+def update_budget(budget, id):
+    conn = connect()
+    sql = """
+    UPDATE budget
+    SET amount = %s
+    WHERE budget_id = %s
+    """
+    values = (budget.get("amount"), id)
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute(sql, values)
+        conn.commit()
+        return budget
