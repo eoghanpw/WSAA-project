@@ -26,6 +26,13 @@ def get_all_spending():
     return jsonify(dao.get_all_spending())
 
 
+# Get all spending by tag
+@app.route("/spending/tags", methods=["GET"])
+@cross_origin()
+def get_all_spending_by_tag():
+    return jsonify(dao.get_all_spending_by_tag())
+
+
 # Get spending by month
 @app.route("/spending/<month>", methods=["GET"])
 @cross_origin()
@@ -33,18 +40,11 @@ def get_spending_by_month(month):
     return jsonify(dao.get_spending_by_month(month))
 
 
-# Get spending by tag
-@app.route("/spending/<int:tag>", methods=["GET"])
+# Get monthly spending by tag
+@app.route("/spending/tags/<month>", methods=["GET"])
 @cross_origin()
-def get_spending_by_tag(tag):
-    return jsonify(dao.get_spending_by_tag(tag))
-
-
-# Get spending by description
-# @app.route("/expenses/<desc>", methods=["GET"])
-# @cross_origin()
-# def search_expenses_by_desc(desc):
-#     return jsonify(sql.search_expenses_by_desc(desc))
+def get_monthly_spending_by_tag(month):
+    return jsonify(dao.get_monthly_spending_by_tag(month))
 
 
 # Create expense

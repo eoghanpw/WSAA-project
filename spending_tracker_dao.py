@@ -37,6 +37,25 @@ def get_all_spending():
         return cursor.fetchall()
 
 
+# Fuction to get all spending by tag
+def get_all_spending_by_tag():
+    conn = connect()
+    # SQL query
+    sql = """
+    SELECT tags.tag_name, ROUND(SUM(data.cost),2) AS total_spending
+    FROM spending_data data
+    INNER JOIN spending_tags tags
+    ON data.tag = tags.tag_id
+    GROUP BY tags.tag_id
+    ORDER BY tags.tag_id
+    """
+    # Create cursor to run sql query
+    with conn.cursor() as cursor:
+        cursor.execute(sql)
+        # Return all records
+        return cursor.fetchall()
+
+
 # Fuction to get spending by month
 def get_spending_by_month(month):
     conn = connect()
@@ -53,34 +72,21 @@ def get_spending_by_month(month):
         return cursor.fetchall()
 
 
-# Fuction to get spending by tag
-def get_spending_by_tag(tag):
+# Fuction to get monthly spending by tag
+def get_monthly_spending_by_tag(month):
     conn = connect()
     sql = """
-    SELECT * FROM spending_data data
+    SELECT tags.tag_name, ROUND(SUM(data.cost),2) AS monthly_spending
+    FROM spending_data data
     INNER JOIN spending_tags tags
     ON data.tag = tags.tag_id
-    WHERE data.tag = %s
-    ORDER BY data.date
+    WHERE MONTHNAME(data.date) = %s
+    GROUP BY tags.tag_id
+    ORDER BY tags.tag_id
     """
-    values = tag
+    values = month
     with conn.cursor() as cursor:
         cursor.execute(sql, values)
-        return cursor.fetchall()
-
-
-# Fuction to search spending by description
-def get_spending_by_desc(desc):
-    conn = connect()
-    sql = """
-    SELECT * FROM spending_data data
-    INNER JOIN spending_tags tags
-    ON data.tag = tags.tag_id
-    WHERE data.description LIKE %s
-    ORDER BY data.date
-    """
-    with conn.cursor() as cursor:
-        cursor.execute(sql, "%" + desc + "%")
         return cursor.fetchall()
 
 
