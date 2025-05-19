@@ -14,7 +14,7 @@
             }
         }
         function showAllSpendingButton() {
-          document.getElementById("button-getAll").addEventListener("click", showAllSpendingTable());
+          document.getElementById("button-getAll").addEventListener("click", clearSearch(), showAllSpendingTable());
         }
 
         // Function to show monthly spending on button click
@@ -31,7 +31,7 @@
             }
         }
         function showMonthlySpendingButton(month) {
-          document.getElementById("button-getMonthly").addEventListener("click", showMonthlySpendingTable(month));
+          document.getElementById("button-getMonthly").addEventListener("click", clearSearch(), showMonthlySpendingTable(month));
         }
 
         // Function to clear the table
@@ -63,6 +63,11 @@
                   }
                 }
             }
+        }
+        // Function to clear the search input
+        // https://www.geeksforgeeks.org/html-clearing-the-input-field/
+        function clearSearch() {
+          document.getElementById("tableSearch").value = "";
         }
 
         // function to process the get response and populate the table

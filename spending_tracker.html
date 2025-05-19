@@ -21,10 +21,9 @@
           </div>
 
           <div>
-            <button class="btn btn-primary" id="button-getAll" onclick="showAllSpendingButton()">Show All Spending</button><br/><br/>
-          </div>
+            <button class="btn btn-primary" id="button-getAll" onclick="showAllSpendingButton()">Show All Spending</button>
 
-          <div class="dropdown">  <!-- https://getbootstrap.com/docs/5.3/components/dropdowns/ -->
+            <!-- https://getbootstrap.com/docs/5.3/components/dropdowns/ -->
             <button class="btn btn-primary dropdown-toggle" id="button-getMonthly" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Show Monthly Spending
             </button><br/><br/>
@@ -42,6 +41,44 @@
                 <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('November')">November</a></li>
                 <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('December')">December</a></li>
             </ul>
+          </div>
+
+          <div>
+            <button class="btn btn-primary" id="button-addExpense" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              Add Expense
+            </button><br/><br/>
+          </div>
+
+          <div class="collapse" id="collapseExample"> <!--https://getbootstrap.com/docs/5.3/components/collapse/#example-->
+            <div class="card card-body">
+              <div class="form-group">
+                <label for="date">Date</label>
+                <input class="form-control" type="date" id="date">
+              </div>
+              <div class="form-group">
+                <label for="description">Description</label>
+                <input class="form-control" type="text" id="description" placeholder="Enter description...">
+              </div>
+              <div class="form-group">
+                <label for="tag">Tag</label>
+                <select class="form-select" id="tag" aria-label="Floating label select example">
+                  <option selected>Choose tag...</option>
+                  <option value="1">Household</option>
+                  <option value="2">Leisure</option>
+                  <option value="3">Loans</option>
+                  <option value="4">Savings</option>
+                  <option value="5">Transport</option>
+                  <option value="6">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cost">Cost</label>
+                <input class="form-control" type="number" id="cost" placeholder="Enter cost...">
+              </div><br/>
+              <div class="form-group">
+                <button class="btn btn-secondary" id="button-submitExpense" type="button">Submit</button>
+              </div>
+            </div><br/>
           </div>
 
           <div>
