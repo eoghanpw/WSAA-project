@@ -4,15 +4,29 @@
             var table = document.getElementById("spendingTable");
             if (table.style.display === "none" || table.style.display === "") {
                 table.style.display = "table"; // Show the table if it's hidden
+                showSearch();
                 clearTable();
-                getAll(processGetResponse)
+                getAll(processGetResponse);
+                getAllTags(processGetTagResponse);
             } else {
                 clearTable();
-                getAll(processGetResponse)
+                getAll(processGetResponse);
+                getAllTags(processGetTagResponse);
                 //table.style.display = "none"; // Hide the table if it's visible
 
             }
         }
+ //       function showAllTagTable() {
+ //           var table = document.getElementById("tagTable");
+ //           if (table.style.display === "none" || table.style.display === "") {
+ //               table.style.display = "table"; // Show the table if it's hidden
+ //               getAllTags(processGetTagResponse)
+ //           } else {
+ //               getAllTags(processGetTagResponse)
+ //               //table.style.display = "none"; // Hide the table if it's visible
+//
+ //           }
+ //       }
         function showAllSpendingButton() {
           document.getElementById("button-getAll").addEventListener("click", clearSearch(), showAllSpendingTable());
         }
@@ -23,11 +37,14 @@
             var table = document.getElementById("spendingTable");
             if (table.style.display === "none" || table.style.display === "") {
                 table.style.display = "table"; // Show the table if it's hidden
+                showSearch();
                 clearTable();
-                getByMonth(month, processGetResponse)
+                getByMonth(month, processGetResponse);
+                getByMonthTags(month, processGetTagResponse);
             } else {
                 clearTable();
-                getByMonth(month, processGetResponse)
+                getByMonth(month, processGetResponse);
+                getByMonthTags(month, processGetTagResponse);
             }
         }
         function showMonthlySpendingButton(month) {
@@ -38,8 +55,10 @@
         // https://codeforgeek.com/remove-all-rows-from-table-in-javascript/
         // https://www.youtube.com/watch?v=qBg8IB3u28s
         function clearTable() {
-            const tableBody = document.querySelector('#spendingTable tbody');
-            tableBody.innerHTML = "";
+            const spendingTable = document.querySelector('#spendingTable tbody');
+            spendingTable.innerHTML = "";
+            const tagTable = document.querySelector('#tagTable tbody');
+            tagTable.innerHTML = "";
         }
 
         // Function to filter table in search bar
@@ -69,6 +88,17 @@
         function clearSearch() {
           document.getElementById("tableSearch").value = "";
         }
+
+        // Function to display search input
+        // https://www.w3schools.com/HOWTO/howto_js_toggle_hide_show.asp
+        function showSearch() {
+          var showSearch = document.getElementById("tableSearch");
+          if (showSearch.style.display === "none") {
+            showSearch.style.display = "block";
+          } else {
+              showSearch.style.display = "none";
+            }
+          }
 
         // function to process the get response and populate the table
         function processGetResponse(result){
@@ -107,4 +137,30 @@
             cell6.innerHTML = '<button class="btn btn-secondary" onclick="showUpdate(this)">Update</button>'
             var cell7 = rowElement.insertCell(6);
             cell7.innerHTML = '<button class="btn btn-secondary" onclick=doDelete(this)>Delete</button>'
+        }
+        
+        // function to process the get tags response and populate the table
+        function processGetTagResponse(result){
+            console.log("in process")
+            for (tag of result){
+                displayTag = {}
+                displayTag.tag_name = tag.tag_name
+                displayTag.total_spending = tag.total_spending
+                addTagToTable(displayTag)
+            }
+        }
+
+        // function to populate rows of the table
+        function addTagToTable(tag){
+            // Add data rows to body of table
+            // https://stackoverflow.com/a/18333693
+            var tableBody = document.querySelector('#tagTable tbody');
+            var rowElement = tableBody.insertRow(-1)
+            
+            //rowElement.setAttribute('id',expense.id)
+            
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = tag.tag_name
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = tag.total_spending
         }

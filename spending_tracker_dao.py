@@ -76,7 +76,7 @@ def get_spending_by_month(month):
 def get_monthly_spending_by_tag(month):
     conn = connect()
     sql = """
-    SELECT tags.tag_name, ROUND(SUM(data.cost),2) AS monthly_spending
+    SELECT tags.tag_name, ROUND(SUM(data.cost),2) AS total_spending
     FROM spending_data data
     INNER JOIN spending_tags tags
     ON data.tag = tags.tag_id
