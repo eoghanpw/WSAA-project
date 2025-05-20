@@ -1,7 +1,7 @@
 # rest_server.py
 # Author: Eoghan Walsh
 
-from flask import Flask, request, jsonify  # render_template url_for, redirect, abort
+from flask import Flask, request, jsonify, abort  # render_template url_for, redirect
 from flask_cors import CORS, cross_origin
 import spending_tracker_dao as dao
 
@@ -53,9 +53,21 @@ def get_monthly_spending_by_tag(month):
 def add_expense():
     expense_json = request.json
     new_expense = {}
+    if expense_json["date"] == "":
+        print("missing date")
+        abort(400)
     new_expense["date"] = expense_json["date"]
+    if expense_json["description"] == "":
+        print("missing description")
+        abort(400)
     new_expense["description"] = expense_json["description"]
+    if expense_json["tag"] is None:
+        print("missing tag")
+        abort(400)
     new_expense["tag"] = expense_json["tag"]
+    if expense_json["cost"] is None:
+        print("missing cost")
+        abort(400)
     new_expense["cost"] = expense_json["cost"]
     return jsonify(dao.add_new_expense(new_expense))
 

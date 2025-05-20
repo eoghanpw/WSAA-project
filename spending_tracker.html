@@ -42,7 +42,7 @@
                 <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('December')">December</a></li>
             </ul>
             <!--Ref:https://getbootstrap.com/docs/5.3/components/collapse/#example-->
-            <button class="btn btn-primary" id="button-viewTotals" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTotals" aria-expanded="false" aria-controls="collapseTotals">
+            <button class="btn btn-primary" id="button-viewTotals" type="button" data-bs-toggle="collapse" data-bs-target="#viewTotals" aria-expanded="false" aria-controls="viewTotals">
               View Totals
             </button>
 
@@ -50,48 +50,46 @@
               Add Expense
             </button><br/><br/>
 
-            <div class="collapse" id="collapseTotals"> 
-                  <table class="table" id="tagTable">
-                    <thead>
-                      <tr>
-                        <th scope="col">Tag</th>
-                        <th scope="col">Total Spending</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-            </div>
-
             <div class="collapse" id="collapseExpense"> 
               <div class="card card-body">
-                <div class="form-group"> <!--Ref:https://getbootstrap.com/docs/4.0/components/forms/#form-groups-->
-                  <label for="date"><strong>Date</strong></label>
-                  <input class="form-control" type="date" id="date">
-                </div>
-                <div class="form-group">
-                  <label for="description"><strong>Description</strong></label>
-                  <input class="form-control" type="text" id="description" placeholder="Enter description...">
-                </div>
-                <div class="form-group">
-                  <label for="tag"><strong>Tag</strong></label>
-                  <select class="form-select" id="tag" aria-label="Floating label select example">
-                    <option selected>Choose tag...</option>
-                    <option value="1">Household</option>
-                    <option value="2">Leisure</option>
-                    <option value="3">Loans</option>
-                    <option value="4">Savings</option>
-                    <option value="5">Transport</option>
-                    <option value="6">Other</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="cost"><strong>Cost</strong></label>
-                  <input class="form-control" type="number" id="cost" placeholder="Enter cost...">
-                </div><br/>
-                <div class="form-group">
-                  <button class="btn btn-secondary" id="button-submitExpense" type="button">Submit</button>
-                </div>
+                <form>
+                  <div class="form-group" id="addExpenseForm"> <!--Ref:https://getbootstrap.com/docs/4.0/components/forms/#form-groups-->
+                    <label for="date"><strong>Date</strong></label>
+                    <input class="form-control" type="date" name="date" required><br/>
+
+                    <label for="description"><strong>Description</strong></label>
+                    <input class="form-control" type="text" name="description" placeholder="Enter description..." required><br/>
+
+                    <label for="tag"><strong>Tag</strong></label>
+                    <select class="form-select" name="tag" aria-label="Floating label select example" required>
+                      <option selected disabled value="">Choose tag...</option>
+                      <option value="1">Household</option>
+                      <option value="2">Leisure</option>
+                      <option value="3">Loans</option>
+                      <option value="4">Savings</option>
+                      <option value="5">Transport</option>
+                      <option value="6">Other</option>
+                    </select><br/>
+
+                    <label for="cost"><strong>Cost</strong></label>
+                    <input class="form-control" type="number" name="cost" placeholder="Enter cost..." required><br/>
+
+                    <button class="btn btn-secondary" id="button-submitExpense" type="submit" onclick="doCreate()">Submit</button>
+                  </div>
+                </form>
               </div><br/>
+            </div>
+
+            <div class="collapse" id="viewTotals"> 
+                <table class="table" id="tagTable">
+                  <thead>
+                    <tr>
+                      <th scope="col">Tag</th>
+                      <th scope="col">Total Spending</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
             </div>
           </div>
 

@@ -101,7 +101,7 @@
           }
 
         // function to process the get response and populate the table
-        function processGetResponse(result){
+        function processGetResponse(result) {
             console.log("in process")
             for (expense of result){
                 displayExpense = {}
@@ -115,7 +115,7 @@
         }
 
         // function to populate rows of the table
-        function addExpenseToTable(expense){
+        function addExpenseToTable(expense) {
             // Add data rows to body of table
             // https://stackoverflow.com/a/18333693
             var tableBody = document.querySelector('#spendingTable tbody');
@@ -140,7 +140,7 @@
         }
         
         // function to process the get tags response and populate the table
-        function processGetTagResponse(result){
+        function processGetTagResponse(result) {
             console.log("in process")
             for (tag of result){
                 displayTag = {}
@@ -151,16 +151,43 @@
         }
 
         // function to populate rows of the table
-        function addTagToTable(tag){
+        function addTagToTable(tag) {
             // Add data rows to body of table
             // https://stackoverflow.com/a/18333693
             var tableBody = document.querySelector('#tagTable tbody');
             var rowElement = tableBody.insertRow(-1)
-            
-            //rowElement.setAttribute('id',expense.id)
-            
+
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = tag.tag_name
             var cell2 = rowElement.insertCell(1);
             cell2.innerHTML = tag.total_spending
+        }
+
+        // functions to create new expense
+        function addExpenseForm() {
+          var addExpenseForm = document.getElementById('addExpenseForm');
+          var expense = {}
+        	expense.date = addExpenseForm.querySelector('input[name="date"]').value
+        	expense.description = addExpenseForm.querySelector('input[name="description"]').value
+        	expense.tag = parseInt(addExpenseForm.querySelector('select[name="tag"]').value)
+        	expense.cost = parseFloat(addExpenseForm.querySelector('input[name="cost"]').value)
+        	console.log(JSON.stringify(expense))
+          return expense
+        }
+        function processAddExpenseResult(result) {
+          newExpense = addExpenseForm(result)
+          clearExpenseForm()
+        }
+        function doCreate() {
+          expense = addExpenseForm()
+          addExpense(expense, processAddExpenseResult)
+        }
+
+        // Function to clear the add expense form
+        function clearExpenseForm() {
+          var addExpenseForm = document.getElementById('addExpenseForm');
+          addExpenseForm.querySelector('input[name="date"]').value = ""
+        	addExpenseForm.querySelector('input[name="description"]').value = ""
+        	addExpenseForm.querySelector('select[name="tag"]').value = "Choose tag..."
+        	addExpenseForm.querySelector('input[name="cost"]').value = ""
         }
