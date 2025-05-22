@@ -232,19 +232,19 @@
         function addExpenseForm() {
           var addExpenseForm = document.getElementById('addExpenseForm');
           var expense = {}
-        	expense.date = addExpenseForm.querySelector('input[name="date"]').value
-        	expense.description = addExpenseForm.querySelector('input[name="description"]').value
-        	expense.tag = parseInt(addExpenseForm.querySelector('select[name="tag"]').value)
-        	expense.cost = parseFloat(addExpenseForm.querySelector('input[name="cost"]').value)
+        	expense.date = addExpenseForm.querySelector('input[id="date"]').value
+        	expense.description = addExpenseForm.querySelector('input[id="description"]').value
+        	expense.tag = parseInt(addExpenseForm.querySelector('select[id="tag"]').value)
+        	expense.cost = parseFloat(addExpenseForm.querySelector('input[id="cost"]').value)
         	console.log(JSON.stringify(expense))
           return expense
         }
         function processAddExpenseResult(result) {
           newExpense = addExpenseForm(result)
-          showAddExpense()
-          clearExpenseForm()
-          showAllSpendingButton()
-          alert("New expense added")
+          showAddExpense();
+          clearExpenseForm();
+          showAllSpendingButton();
+          alert("New expense added");
         }
         function doCreate() {
           expense = addExpenseForm()
@@ -270,10 +270,10 @@
         // Function to clear the add expense form
         function clearExpenseForm() {
           var addExpenseForm = document.getElementById('addExpenseForm');
-          addExpenseForm.querySelector('input[name="date"]').value = ""
-        	addExpenseForm.querySelector('input[name="description"]').value = ""
-        	addExpenseForm.querySelector('select[name="tag"]').value = "Choose tag..."
-        	addExpenseForm.querySelector('input[name="cost"]').value = ""
+          addExpenseForm.querySelector('input[id="date"]').value = ""
+        	addExpenseForm.querySelector('input[id="description"]').value = ""
+        	addExpenseForm.querySelector('select[id="tag"]').value = "Choose tag..."
+        	addExpenseForm.querySelector('input[id="cost"]').value = ""
         }
 
         // Function to get remaining budget
