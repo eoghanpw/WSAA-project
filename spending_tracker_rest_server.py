@@ -99,6 +99,13 @@ def get_budget():
     return jsonify(dao.get_budget())
 
 
+# Get budget by month
+@app.route("/budget/<month>", methods=["GET"])
+@cross_origin()
+def get_budget_by_month(month):
+    return jsonify(dao.get_budget_by_month(month))
+
+
 # Update budget
 @app.route("/budget/<int:id>", methods=["PUT"])
 @cross_origin()

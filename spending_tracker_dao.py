@@ -141,6 +141,20 @@ def delete_expense(id):
 
 
 # Fuction to get budget
+def get_budget_by_month(month):
+    conn = connect()
+    sql = """
+    SELECT * FROM budget
+    WHERE budget_month = %s
+    ORDER BY budget_id
+    """
+    values = month
+    with conn.cursor() as cursor:
+        cursor.execute(sql, values)
+        return cursor.fetchall()
+
+
+# Fuction to get budget by month
 def get_budget():
     conn = connect()
     sql = """

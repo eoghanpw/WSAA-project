@@ -41,10 +41,6 @@
                 <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('November')">November</a></li>
                 <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('December')">December</a></li>
             </ul>
-            <!--Ref:https://getbootstrap.com/docs/5.3/components/collapse/#example-->
-            <button class="btn btn-primary" id="button-viewTotals" type="button" data-bs-toggle="collapse" data-bs-target="#viewTotals" aria-expanded="false" aria-controls="viewTotals">
-              View Totals
-            </button>
 
             <button class="btn btn-primary" id="button-addExpense" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExpense" aria-expanded="false" aria-controls="collapseExpense">
               Add Expense
@@ -79,8 +75,32 @@
                 </form>
               </div><br/>
             </div>
+          </div>
 
-            <div class="collapse" id="viewTotals"> 
+          <div class="collapse" id="viewBudget"> 
+                <table class="table" id="budgetTable">
+                  <thead>
+                    <tr>
+                      <th scope="col">Month</th>
+                      <th scope="col">Budget</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+          </div>
+
+          <div id="button-viewTotalsBudget" style="display: none;">
+            <!--Ref:https://getbootstrap.com/docs/5.3/components/collapse/#example-->
+            <button class="btn btn-secondary" id="button-viewTotals" type="button" data-bs-toggle="collapse" data-bs-target="#viewTotals" aria-expanded="false" aria-controls="viewTotals">
+              View Totals
+            </button>
+
+            <button class="btn btn-secondary" id="button-viewBudget" type="button" data-bs-toggle="collapse" data-bs-target="#viewBudget" aria-expanded="false" aria-controls="viewBudget">
+              View Budget
+            </button>
+          </div><br/>
+
+          <div class="collapse" id="viewTotals"> 
                 <table class="table" id="tagTable">
                   <thead>
                     <tr>
@@ -90,7 +110,6 @@
                   </thead>
                   <tbody></tbody>
                 </table>
-            </div>
           </div>
 
           <div>

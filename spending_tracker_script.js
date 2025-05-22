@@ -4,14 +4,17 @@
             var table = document.getElementById("spendingTable");
             if (table.style.display === "none" || table.style.display === "") {
                 table.style.display = "table"; // Show the table if it's hidden
+                showViewTotalsBudget();
                 showSearch();
                 clearTable();
                 getAll(processGetResponse);
                 getAllTags(processGetTagResponse);
+                getBudget(processGetBudgetResponse);
             } else {
                 clearTable();
                 getAll(processGetResponse);
                 getAllTags(processGetTagResponse);
+                getBudget(processGetBudgetResponse);
                 //table.style.display = "none"; // Hide the table if it's visible
 
             }
@@ -37,14 +40,17 @@
             var table = document.getElementById("spendingTable");
             if (table.style.display === "none" || table.style.display === "") {
                 table.style.display = "table"; // Show the table if it's hidden
+                showViewTotalsBudget();
                 showSearch();
                 clearTable();
                 getByMonth(month, processGetResponse);
                 getByMonthTags(month, processGetTagResponse);
+                getBudgetMonth(month, processGetBudgetResponse);
             } else {
                 clearTable();
                 getByMonth(month, processGetResponse);
                 getByMonthTags(month, processGetTagResponse);
+                getBudgetMonth(month, processGetBudgetResponse);
             }
         }
         function showMonthlySpendingButton(month) {
@@ -59,6 +65,8 @@
             spendingTable.innerHTML = "";
             const tagTable = document.querySelector('#tagTable tbody');
             tagTable.innerHTML = "";
+            const budgetTable = document.querySelector('#budgetTable tbody');
+            budgetTable.innerHTML = "";
         }
 
         // Function to filter table in search bar
@@ -100,7 +108,27 @@
             }
           }
 
-        // function to process the get response and populate the table
+        // Function to display view totals button
+        function showViewTotalsBudget() {
+          var viewTotals = document.getElementById("button-viewTotalsBudget");
+          if (viewTotals.style.display === "none") {
+            viewTotals.style.display = "block";
+          } else {
+              viewTotals.style.display = "none";
+            }
+          }
+
+        // Function to display view budget button
+        function showViewBudget() {
+          var viewBudget = document.getElementById("button-viewBudget");
+          if (viewBudget.style.display === "none") {
+            viewBudget.style.display = "block";
+          } else {
+              viewBudget.style.display = "none";
+            }
+          }
+
+        // function to process the get response and populate the spending table
         function processGetResponse(result) {
             console.log("in process")
             for (expense of result){
@@ -114,7 +142,7 @@
             }
         }
 
-        // function to populate rows of the table
+        // function to populate rows of the spending table
         function addExpenseToTable(expense) {
             // Add data rows to body of table
             // https://stackoverflow.com/a/18333693
@@ -141,16 +169,23 @@
         
         // function to process the get tags response and populate the table
         function processGetTagResponse(result) {
-            console.log("in process")
+            console.log("in process", result)
+            sum = 0
             for (tag of result){
                 displayTag = {}
                 displayTag.tag_name = tag.tag_name
                 displayTag.total_spending = tag.total_spending
                 addTagToTable(displayTag)
+                sum = sum + tag.total_spending
             }
+            total = {}
+            total.tag_name = "Total"
+            total.total_spending = sum
+            addTagToTable(total)
+            console.log(sum)
         }
 
-        // function to populate rows of the table
+        // function to populate rows of the tag table
         function addTagToTable(tag) {
             // Add data rows to body of table
             // https://stackoverflow.com/a/18333693
@@ -160,7 +195,32 @@
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = tag.tag_name
             var cell2 = rowElement.insertCell(1);
-            cell2.innerHTML = tag.total_spending
+            cell2.innerHTML = tag.total_spending.toFixed(2)
+        }
+
+        // function to process the get budget response and populate the table
+        function processGetBudgetResponse(result) {
+            console.log("in process", result)
+            for (budget of result){
+                displayBudget = {}
+                displayBudget.budget_month = budget.budget_month
+                displayBudget.amount = budget.amount
+                addBudgetToTable(displayBudget)
+
+            }
+        }
+
+        // function to populate rows of the budget table
+        function addBudgetToTable(budget) {
+            // Add data rows to body of table
+            // https://stackoverflow.com/a/18333693
+            var tableBody = document.querySelector('#budgetTable tbody');
+            var rowElement = tableBody.insertRow(-1)
+
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = budget.budget_month
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = budget.amount
         }
 
         // functions to create new expense
