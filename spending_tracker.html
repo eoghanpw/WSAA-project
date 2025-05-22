@@ -1,5 +1,6 @@
 <!doctype html>
-<!--Ref:https://github.com/twbs/examples/blob/main/starter/index.html-->
+<!-- Bootstap's CSS and JS -->
+<!-- Ref:https://github.com/twbs/examples/blob/main/starter/index.html -->
 <html lang="en"> 
     <head>
         <meta charset="utf-8">
@@ -12,6 +13,8 @@
     </head> 
     <body>
         <div class="container my-5">
+
+          <!-- Webpage heading and description -->
           <h1>Spending Tracker</h1>
           <div class="col-lg-8 px-0">
             <p class="fs-5">Welcome to Spending Tracker where you can track your monthly spending!</p>
@@ -21,35 +24,41 @@
           </div>
 
           <div>
+
+            <!-- Show all spending button -->
             <button class="btn btn-primary" id="button-getAll" onclick="showAllSpendingButton()">Show All Spending</button>
 
-            <!--Ref:https://getbootstrap.com/docs/5.3/components/dropdowns/-->
+            <!-- Show monthly spending button -->
+            <!-- Ref:https://getbootstrap.com/docs/5.3/components/dropdowns/ -->
             <button class="btn btn-primary dropdown-toggle" id="button-getMonthly" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Show Monthly Spending
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('January')">January</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('February')">February</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('March')">March</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('April')">April</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('May')">May</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('June')">June</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('July')">July</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('August')">August</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('September')">September</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('October')">October</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('November')">November</a></li>
-                <li><a class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('December')">December</a></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('January')">January</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('February')">February</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('March')">March</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('April')">April</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('May')">May</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('June')">June</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('July')">July</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('August')">August</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('September')">September</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('October')">October</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('November')">November</button></li>
+                <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('December')">December</button></li>
             </ul>
 
-            <button class="btn btn-primary" id="button-addExpense" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExpense" aria-expanded="false" aria-controls="collapseExpense">
+            <!-- Add expense button -->
+            <!-- Ref: https://getbootstrap.com/docs/5.3/components/collapse/ -->
+            <button class="btn btn-primary" id="button-addExpense" type="button" onclick="showAddExpense()">
               Add Expense
             </button><br/><br/>
 
-            <div class="collapse" id="collapseExpense"> 
+            <!-- Add expense form -->
+            <!-- Ref:https://getbootstrap.com/docs/4.0/components/forms/#form-groups -->
+            <div class="collapse" id="collapseExpense" style="display: none;"> 
               <div class="card card-body">
-                <form>
-                  <div class="form-group" id="addExpenseForm"> <!--Ref:https://getbootstrap.com/docs/4.0/components/forms/#form-groups-->
+                  <div class="form-group" id="addExpenseForm">
                     <label for="date"><strong>Date</strong></label>
                     <input class="form-control" type="date" name="date" required><br/>
 
@@ -70,35 +79,47 @@
                     <label for="cost"><strong>Cost</strong></label>
                     <input class="form-control" type="number" name="cost" placeholder="Enter cost..." required><br/>
 
-                    <button class="btn btn-secondary" id="button-submitExpense" type="submit" onclick="doCreate()">Submit</button>
+                    <!-- Submit button to add expense -->
+                    <button class="btn btn-danger" id="button-submitExpense" type="submit" onclick="doCreate()">Submit</button>
                   </div>
-                </form>
               </div><br/>
             </div>
+          </div>
+
+          <div id="button-viewTotalsBudget" style="display: none;">
+            <!-- View totals button -->
+            <button class="btn btn-secondary" id="button-viewTotals" type="button" data-bs-toggle="collapse" data-bs-target="#viewTotals" aria-expanded="false" aria-controls="viewTotals">
+              View Totals
+            </button>
+            <!-- View totals button -->
+            <button class="btn btn-secondary" id="button-viewBudget" type="button" data-bs-toggle="collapse" data-bs-target="#viewBudget" aria-expanded="false" aria-controls="viewBudget">
+              View Budget
+            </button>
+
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="button-viewRemaining" onclick="showRemainingBudget()" data-bs-toggle="dropdown" aria-expanded="false">
+              View Balance
+            </button>
+            <ul class="dropdown-menu">
+              <li class="dropdown-item">Remaining Budget: <span id="outputRemaining"></span></li>
+            </ul>
+
+          </div><br/>
+          <div>
+              <span id="outputBudget" style="display: none;"></span>
+              <span id="outputSpent" style="display: none;"></span>
           </div>
 
           <div class="collapse" id="viewBudget"> 
                 <table class="table" id="budgetTable">
                   <thead>
                     <tr>
-                      <th scope="col">Month</th>
+                      <th scope="col">Period</th>
                       <th scope="col">Budget</th>
                     </tr>
                   </thead>
-                  <tbody></tbody>
+                  <tbody id="budgetTableBody"></tbody>
                 </table>
           </div>
-
-          <div id="button-viewTotalsBudget" style="display: none;">
-            <!--Ref:https://getbootstrap.com/docs/5.3/components/collapse/#example-->
-            <button class="btn btn-secondary" id="button-viewTotals" type="button" data-bs-toggle="collapse" data-bs-target="#viewTotals" aria-expanded="false" aria-controls="viewTotals">
-              View Totals
-            </button>
-
-            <button class="btn btn-secondary" id="button-viewBudget" type="button" data-bs-toggle="collapse" data-bs-target="#viewBudget" aria-expanded="false" aria-controls="viewBudget">
-              View Budget
-            </button>
-          </div><br/>
 
           <div class="collapse" id="viewTotals"> 
                 <table class="table" id="tagTable">

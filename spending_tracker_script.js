@@ -9,27 +9,16 @@
                 clearTable();
                 getAll(processGetResponse);
                 getAllTags(processGetTagResponse);
-                getBudget(processGetBudgetResponse);
+                getBudget(processGetTotalBudgetResponse);
             } else {
                 clearTable();
                 getAll(processGetResponse);
                 getAllTags(processGetTagResponse);
-                getBudget(processGetBudgetResponse);
+                getBudget(processGetTotalBudgetResponse);
                 //table.style.display = "none"; // Hide the table if it's visible
-
             }
         }
- //       function showAllTagTable() {
- //           var table = document.getElementById("tagTable");
- //           if (table.style.display === "none" || table.style.display === "") {
- //               table.style.display = "table"; // Show the table if it's hidden
- //               getAllTags(processGetTagResponse)
- //           } else {
- //               getAllTags(processGetTagResponse)
- //               //table.style.display = "none"; // Hide the table if it's visible
-//
- //           }
- //       }
+
         function showAllSpendingButton() {
           document.getElementById("button-getAll").addEventListener("click", clearSearch(), showAllSpendingTable());
         }
@@ -106,7 +95,7 @@
           } else {
               showSearch.style.display = "none";
             }
-          }
+        }
 
         // Function to display view totals button
         function showViewTotalsBudget() {
@@ -116,17 +105,17 @@
           } else {
               viewTotals.style.display = "none";
             }
-          }
+        }
 
-        // Function to display view budget button
-        function showViewBudget() {
-          var viewBudget = document.getElementById("button-viewBudget");
-          if (viewBudget.style.display === "none") {
-            viewBudget.style.display = "block";
+        // Function to display add expense form
+        function showAddExpense() {
+          var addExpense = document.getElementById("collapseExpense");
+          if (addExpense.style.display === "none") {
+            addExpense.style.display = "block";
           } else {
-              viewBudget.style.display = "none";
+              addExpense.style.display = "none";
             }
-          }
+        }
 
         // function to process the get response and populate the spending table
         function processGetResponse(result) {
@@ -134,10 +123,10 @@
             for (expense of result){
                 displayExpense = {}
                 displayExpense.id = expense.id
-                displayExpense.date = expense.date.split(" 00:")[0] //https://www.geeksforgeeks.org/how-to-remove-time-from-date-using-javascript/
+                displayExpense.date = expense
                 displayExpense.description = expense.description
                 displayExpense.tag_name = expense.tag_name
-                displayExpense.cost = expense.cost.toFixed(2) //https://www.w3schools.com/js/js_number_methods.asp
+                displayExpense.cost = expense.cost 
                 addExpenseToTable(displayExpense)
             }
         }
@@ -154,13 +143,13 @@
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = expense.id
             var cell2 = rowElement.insertCell(1);
-            cell2.innerHTML = expense.date
+            cell2.innerHTML = expense.date.date.split(" 00:")[0] //https://www.geeksforgeeks.org/how-to-remove-time-from-date-using-javascript/
             var cell3 = rowElement.insertCell(2);
             cell3.innerHTML = expense.description
             var cell4 = rowElement.insertCell(3);
             cell4.innerHTML = expense.tag_name
             var cell5 = rowElement.insertCell(4);
-            cell5.innerHTML = expense.cost
+            cell5.innerHTML = expense.cost.toLocaleString() //https://www.w3schools.com/jsref/jsref_tolocalestring_number.asp
             var cell6 = rowElement.insertCell(5);
             cell6.innerHTML = '<button class="btn btn-secondary" onclick="showUpdate(this)">Update</button>'
             var cell7 = rowElement.insertCell(6);
@@ -182,7 +171,7 @@
             total.tag_name = "Total"
             total.total_spending = sum
             addTagToTable(total)
-            console.log(sum)
+            //document.getElementById('outputSpent').innerHTML = total.total_spending
         }
 
         // function to populate rows of the tag table
@@ -190,12 +179,13 @@
             // Add data rows to body of table
             // https://stackoverflow.com/a/18333693
             var tableBody = document.querySelector('#tagTable tbody');
-            var rowElement = tableBody.insertRow(-1)
+            var rowElement = tableBody.insertRow(-1);
 
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = tag.tag_name
             var cell2 = rowElement.insertCell(1);
-            cell2.innerHTML = tag.total_spending.toFixed(2)
+            cell2.innerHTML = tag.total_spending.toLocaleString()
+            document.getElementById('outputSpent').innerHTML = tag.total_spending
         }
 
         // function to process the get budget response and populate the table
@@ -206,8 +196,22 @@
                 displayBudget.budget_month = budget.budget_month
                 displayBudget.amount = budget.amount
                 addBudgetToTable(displayBudget)
-
             }
+        }
+
+        // function to process the get total budget response and populate the table
+        function processGetTotalBudgetResponse(result) {
+            console.log("in process", result)
+            sum = 0
+            for (budget of result){
+              sum = sum + budget.amount
+            }
+            total_budget = {}
+            total_budget.budget_month = "Full Year"
+            total_budget.amount = sum
+            addBudgetToTable(total_budget)
+            //document.getElementById('outputBudget').innerHTML = total_budget.amount
+
         }
 
         // function to populate rows of the budget table
@@ -220,7 +224,8 @@
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = budget.budget_month
             var cell2 = rowElement.insertCell(1);
-            cell2.innerHTML = budget.amount
+            cell2.innerHTML = budget.amount.toLocaleString()
+            document.getElementById('outputBudget').innerHTML = budget.amount.toFixed(2)
         }
 
         // functions to create new expense
@@ -236,11 +241,30 @@
         }
         function processAddExpenseResult(result) {
           newExpense = addExpenseForm(result)
+          showAddExpense()
           clearExpenseForm()
+          showAllSpendingButton()
+          alert("New expense added")
         }
         function doCreate() {
           expense = addExpenseForm()
-          addExpense(expense, processAddExpenseResult)
+          if (expense.date === "") {
+            alert("Select date");
+            return;
+          }
+          if (expense.description === "") {
+            alert("Enter description");
+            return;
+          }
+          if (isNaN(expense.tag)) {
+            alert("Select tag");
+            return;
+          }
+          if (isNaN(expense.cost)) {
+            alert("Enter cost");
+            return;
+          }
+          addExpense(expense, processAddExpenseResult);
         }
 
         // Function to clear the add expense form
@@ -250,4 +274,32 @@
         	addExpenseForm.querySelector('input[name="description"]').value = ""
         	addExpenseForm.querySelector('select[name="tag"]').value = "Choose tag..."
         	addExpenseForm.querySelector('input[name="cost"]').value = ""
+        }
+
+        // Function to get remaining budget
+        function showRemainingBudget() {
+          var budget = parseFloat(document.getElementById('outputBudget').innerHTML);
+          var spent = parseFloat(document.getElementById('outputSpent').innerHTML);
+          var remaining = budget - spent;
+          document.getElementById('outputRemaining').innerHTML = remaining.toLocaleString();
+        }
+
+        // Function to delete expense
+        function doDelete(buttonElement) {
+          console.log("in delete")
+          var tableElement = document.getElementById('spendingTable')
+          var rowElement = buttonElement.parentNode.parentNode;
+          // I need the book id
+          id = rowElement.getAttribute("id")
+          console.log("deleting "+id)
+          deleteExpense(id, doNothing)
+          
+          index = rowElement.rowIndex
+          tableElement.deleteRow(index);
+        }
+
+        // Default function for callback
+        function doNothing(result){
+            console.log("nothing:"+result)
+            return "done"
         }
