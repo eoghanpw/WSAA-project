@@ -109,12 +109,8 @@
 
         // Function to display add expense form
         function showAddExpense() {
-          var addExpense = document.getElementById("collapseExpense");
-          if (addExpense.style.display === "none") {
-            addExpense.style.display = "block";
-          } else {
-              addExpense.style.display = "none";
-            }
+           document.getElementById("spendingBody").style.display = "none";
+           document.getElementById("addExpenseForm").style.display = "block";
         }
 
         // function to process the get response and populate the spending table
@@ -153,7 +149,17 @@
             var cell6 = rowElement.insertCell(5);
             cell6.innerHTML = '<button class="btn btn-secondary" onclick="showUpdate(this)">Update</button>'
             var cell7 = rowElement.insertCell(6);
-            cell7.innerHTML = '<button class="btn btn-secondary" onclick=doDelete(this)>Delete</button>'
+            cell7.innerHTML =
+              '<div class="dropdown">'+
+                '<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">'+
+                  'Delete'+
+                '</button>'+
+                '<ul class="dropdown-menu">'+
+                  '<li><button class="dropdown-item" onclick="doDelete(this)">Confirm</button></li>'+
+                  '<li><button class="dropdown-item" href="#">Cancel</button></li>'+
+                '</ul>'+
+              '</div>'
+              //'<button class="btn btn-secondary" onclick="doDelete(this)">Delete</button>'
         }
         
         // function to process the get tags response and populate the table
@@ -241,10 +247,9 @@
         }
         function processAddExpenseResult(result) {
           newExpense = addExpenseForm(result)
-          showAddExpense();
-          clearExpenseForm();
+          cancelCreate();
           showAllSpendingButton();
-          alert("New expense added");
+          addExpenseSuccessAlert();
         }
         function doCreate() {
           expense = addExpenseForm()
@@ -264,6 +269,7 @@
             alert("Enter cost");
             return;
           }
+          console.log(expense)
           addExpense(expense, processAddExpenseResult);
         }
 
@@ -288,7 +294,8 @@
         function doDelete(buttonElement) {
           console.log("in delete")
           var tableElement = document.getElementById('spendingTable')
-          var rowElement = buttonElement.parentNode.parentNode;
+          var rowElement = buttonElement.parentNode.parentNode.parentNode.parentNode.parentNode;
+          console.log(rowElement)
           // I need the book id
           id = rowElement.getAttribute("id")
           console.log("deleting "+id)
@@ -296,10 +303,159 @@
           
           index = rowElement.rowIndex
           tableElement.deleteRow(index);
+          
         }
 
         // Default function for callback
         function doNothing(result){
             console.log("nothing:"+result)
             return "done"
+        }
+
+        function showUpdate(buttonElement){
+           document.getElementById("spendingBody").style.display = "none"
+           document.getElementById("updateExpenseForm").style.display = "block"
+
+           rowElement= buttonElement.parentNode.parentNode
+           expense = getExpenseFromRow(rowElement)
+           console.log(expense)
+           expense2 = {}
+           expense2.id = expense.id
+           expense2.date = convertDate(expense.date)
+           expense2.description = expense.description
+           expense2.tag = convertTags(expense.tag)
+           expense2.cost = expense.cost
+           console.log("updating")
+           console.log(expense2)
+           populateFormWithExpense(expense2)
+            
+        }
+
+        function cancelUpdate(){
+            document.getElementById("spendingBody").style.display = "block";
+            document.getElementById("updateExpenseForm").style.display = "none";
+        }
+
+        function cancelCreate(){
+            document.getElementById("spendingBody").style.display = "block";
+            document.getElementById("addExpenseForm").style.display = "none";
+            clearExpenseForm();
+        }
+        
+        // Function to display spending body
+        function showSpendingBody() {
+          hideStartButton();
+          var spendingBody = document.getElementById("spendingBody");
+          if (spendingBody.style.display === "none") {
+            spendingBody.style.display = "block";
+          } else {
+              spendingBody.style.display = "none";
+            }
+        }
+        // Function to hide start button button
+        function hideStartButton() {
+          var startButton = document.getElementById("button-start");
+          if (startButton.style.display === "none") {
+            startButton.style.display = "block";
+          } else {
+              startButton.style.display = "none";
+            }
+        }
+  
+        function getExpenseFromForm(){
+          var form = document.getElementById('updateExpenseForm')
+       	  var expense = {}
+        	expense.id = form.querySelector('input[id="id"]').value
+        	expense.date = form.querySelector('input[id="date"]').value
+        	expense.description = form.querySelector('input[id="description"]').value
+        	expense.tag = parseInt(form.querySelector('select[id="tag"]').value)
+          expense.cost = parseFloat(form.querySelector('input[id="cost"]').value)
+        	//console.log(JSON.stringify(book))
+            return expense
+        }
+
+        function populateFormWithExpense(expense){
+       		var form = document.getElementById('updateExpenseForm')
+        	form.querySelector('input[id="id"]').disabled = true
+       		form.querySelector('input[id="id"]').value = expense.id
+       		form.querySelector('input[id="date"]').value = expense.date
+        	form.querySelector('input[id="description"]').value = expense.description
+          form.querySelector('select[id="tag"]').value = expense.tag
+          form.querySelector('input[id="cost"]').value = expense.cost
+        }
+
+        function getExpenseFromRow(rowElement) {
+            var expense ={}
+            expense.id  = rowElement.cells[0].firstChild.textContent
+            expense.date = rowElement.cells[1].firstChild.textContent
+            expense.description = rowElement.cells[2].firstChild.textContent
+            expense.tag = rowElement.cells[3].firstChild.textContent
+            expense.cost = rowElement.cells[4].firstChild.textContent
+            return expense
+        }
+
+        function doUpdate(){
+            expense= getExpenseFromForm()
+            console.log(expense)
+            if (expense.date === "") {
+              alert("Select date");
+              return;
+            }
+            if (expense.description === "") {
+              alert("Enter description");
+              return;
+            }
+            if (isNaN(expense.tag)) {
+              alert("Select tag");
+              return;
+            }
+            if (isNaN(expense.cost)) {
+              alert("Enter cost");
+              return;
+            }
+            updateExpense(expense, processUpdateExpenseResult)
+           
+            //showViewall()
+            //clearForm()
+        }
+
+        function processUpdateExpenseResult(result) {
+          updatedExpense = getExpenseFromForm(result)
+          cancelUpdate();
+          showAllSpendingButton();
+          updateExpenseSuccessAlert();
+        }
+
+        function addExpenseSuccessAlert(){
+            document.getElementById("addExpenseSuccess").style.display = "block"
+        }
+
+        function updateExpenseSuccessAlert(){
+            document.getElementById("updateExpenseSuccess").style.display = "block"
+        }
+
+        function convertDate(date) {
+           const day = date.slice(5, 7)
+           const month = date.slice(8, 11)
+           const year = date.slice(12, 16)
+           const monthNumber = convertMonth(month)
+
+           newDate = year+"-"+monthNumber+"-"+day
+           return newDate
+        }
+        function convertMonth(month) {
+          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          
+          const index = months.indexOf(month);
+
+          return (index +1).toString().padStart(2, 0)
+
+        }
+        function convertTags(tag) {
+          const tags = ["Household", "Leisure", "Loans", "Savings", "Transport", "Other"];
+          const index = tags.indexOf(tag);
+
+          return (index + 1)
+
         }

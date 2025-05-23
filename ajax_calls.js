@@ -114,3 +114,20 @@ function deleteExpense(id, callback) {
         }
     });
 }
+function updateExpense(expense, callback) {
+    console.log("updating: " +JSON.stringify(expense));
+    $.ajax({
+        "url": "http://127.0.0.1:5000/spending/"+ encodeURI(expense.id),
+        "method": "PUT",
+        "data": JSON.stringify(expense),
+        "dataType": "JSON",
+        "contentType": "application/json; charset=utf-8",
+        "success": function(result) {
+            console.log(result);
+            callback(result)   
+        },
+        "error": function(xhr,status,error) {
+            console.log("error: "+status+" msg:"+error);
+        }
+    });
+}
