@@ -12,11 +12,16 @@
         <script src="./spending_tracker_script.js"></script>
     </head> 
     <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div class="container">
+            <button class="btn btn-primary" id="button-home" onclick="returnHome()">Home</button>
+          </div>
+        </nav>
         <div class="container my-5">
 
           <!-- New expense added alert -->
           <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;" id="addExpenseSuccess">
-            <strong>New expense added!</strong>
+            <strong>New expense created!</strong>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
 
@@ -26,13 +31,20 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
 
+          <!-- Budget updated alert -->
+          <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;" id="updateBudgetSuccess">
+            <strong>Budget updated!</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+
           <!-- Webpage heading and description -->
-          <h1>Spending Tracker</h1>
+          <h1>Spending Tracker 2025</h1>
           <div class="col-lg-8 px-0">
-            <p class="fs-5">Welcome to Spending Tracker where you can track your monthly spending!</p>
+            <p class="fs-5">Welcome to Spending Tracker where you can track your 2025 spending!</p>
 
             <hr class="col-8 my-4">
 
+            <!-- start button -->
             <button type="button" class="btn btn-primary btn-lg" id="button-start" style="display: block;" onclick="showSpendingBody()">Let's get started!</button>
 
           </div>
@@ -64,28 +76,37 @@
               </ul>
 
               <!-- Add expense button -->
-              <!-- Ref: https://getbootstrap.com/docs/5.3/components/collapse/ -->
               <button class="btn btn-primary" id="button-addExpense" type="button" onclick="showAddExpense()">
-                Add Expense
+                Create Expense
+              </button>
+
+              <!-- Update budget button -->
+              <button class="btn btn-primary" id="button-updateBudget" type="button" onclick="showUpdateBudget()">
+                Update Budget
               </button><br/><br/>
 
             </div>
 
-            <div id="button-viewTotalsBudget" style="display: none;">
-              <!-- View totals button -->
-              <button class="btn btn-secondary" id="button-viewTotals" type="button" data-bs-toggle="collapse" data-bs-target="#viewTotals" aria-expanded="false" aria-controls="viewTotals">
-                View Totals
+            <div id="button-viewTagsBudget" style="display: none;">
+              <!-- View tags button -->
+              <button class="btn btn-secondary" id="button-viewTags" type="button" data-bs-toggle="collapse" data-bs-target="#viewTags" aria-expanded="false" aria-controls="viewTags">
+                View Tags
               </button>
-              <!-- View totals button -->
+
+              <!-- View budget button -->
               <button class="btn btn-secondary" id="button-viewBudget" type="button" data-bs-toggle="collapse" data-bs-target="#viewBudget" aria-expanded="false" aria-controls="viewBudget">
                 View Budget
               </button>
 
+              <!-- View balance button -->
               <button class="btn btn-secondary dropdown-toggle" type="button" id="button-viewRemaining" onclick="showRemainingBudget()" data-bs-toggle="dropdown" aria-expanded="false">
                 View Balance
               </button>
+
               <ul class="dropdown-menu">
-                <li class="dropdown-item">Remaining Budget: <span id="outputRemaining"></span></li>
+                <li class="dropdown-item">Total Budget: <span id="outputBudget"></span></li>
+                <li class="dropdown-item">Total Spent: <span id="outputSpent"></span></li>
+                <li class="dropdown-item">Remaining Funds: <span id="outputRemaining"></span></li>
               </ul>
 
             </div><br/>
@@ -102,11 +123,11 @@
                         <th scope="col">Budget</th>
                       </tr>
                     </thead>
-                    <tbody id="budgetTableBody"></tbody>
+                    <tbody></tbody>
                   </table>
             </div>
 
-            <div class="collapse" id="viewTotals"> 
+            <div class="collapse" id="viewTags"> 
                   <table class="table" id="tagTable">
                     <thead>
                       <tr>
@@ -140,21 +161,21 @@
             </div>
           </div>
 
-          <!-- Add expense form -->
+          <!-- Create expense form -->
           <!-- Ref:https://getbootstrap.com/docs/4.0/components/forms/#form-groups -->
           <div class="card card-body" id="addExpenseForm" style="display: none;">
-              <h4>Add Expense</h4>
+              <h4>Create Expense</h4>
               <hr>
               <div class="form-group">
 
-                <label for="date"><strong>Date</strong></label>
-                <input class="form-control" type="date" id="date"><br/>
+                <label for="addExpenseDate"><strong>Date</strong></label>
+                <input class="form-control" type="date" id="addExpenseDate" min="2025-01-01" max="2025-12-31"><br/>
 
-                <label for="description"><strong>Description</strong></label>
-                <input class="form-control" type="text" id="description" placeholder="Enter description..."><br/>
+                <label for="addExpenseDescription"><strong>Description</strong></label>
+                <input class="form-control" type="text" id="addExpenseDescription" placeholder="Enter description..."><br/>
 
-                <label for="tag"><strong>Tag</strong></label>
-                <select class="form-select" id="tag" aria-label="Floating label select example">
+                <label for="addExpenseTag"><strong>Tag</strong></label>
+                <select class="form-select" id="addExpenseTag" aria-label="Floating label select example">
                   <option selected disabled value="">Select tag...</option>
                   <option value="1">Household</option>
                   <option value="2">Leisure</option>
@@ -164,12 +185,12 @@
                   <option value="6">Other</option>
                 </select><br/>
 
-                <label for="cost"><strong>Cost</strong></label>
-                <input class="form-control" type="number" id="cost" placeholder="Enter cost..."><br/>
+                <label for="addExpenseCost"><strong>Cost</strong></label>
+                <input class="form-control" type="number" id="addExpenseCost" placeholder="Enter cost..."><br/>
 
                 <span>
-                  <button class="btn btn-danger" id="button-submitExpense" type="submit" onclick="doCreate()">Submit</button>
-                  <button class="btn btn-secondary" id="button-cancelExpense" type="submit" onclick="cancelCreate()">Cancel</button>
+                  <button class="btn btn-success" id="button-submitExpense" type="submit" onclick="doCreate()">Submit</button>
+                  <button class="btn btn-danger" id="button-cancelExpense" type="submit" onclick="cancelCreate()">Cancel</button>
                 </span>
               </div>
           </div>
@@ -180,17 +201,17 @@
               <hr>
               <div class="form-group">
 
-                <label for="id"><strong>Id</strong></label>
-                <input class="form-control" type="number" id="id" disabled><br/>
+                <label for="updateExpenseId"><strong>Id</strong></label>
+                <input class="form-control" type="number" id="updateExpenseId" disabled><br/>
 
-                <label for="date"><strong>Date</strong></label>
-                <input class="form-control" type="date" id="date"><br/>
+                <label for="updateExpenseDate"><strong>Date</strong></label>
+                <input class="form-control" type="date" id="updateExpenseDate" min="2025-01-01" max="2025-12-31"><br/>
 
-                <label for="description"><strong>Description</strong></label>
-                <input class="form-control" type="text" id="description" placeholder="Enter description..."><br/>
+                <label for="updateExpenseDescription"><strong>Description</strong></label>
+                <input class="form-control" type="text" id="updateExpenseDescription" placeholder="Enter description..."><br/>
 
-                <label for="tag"><strong>Tag</strong></label>
-                <select class="form-select" id="tag" aria-label="Floating label select example">
+                <label for="updateExpenseTag"><strong>Tag</strong></label>
+                <select class="form-select" id="updateExpenseTag" aria-label="Floating label select example">
                   <option selected disabled value="">Select tag...</option>
                   <option value="1">Household</option>
                   <option value="2">Leisure</option>
@@ -200,14 +221,38 @@
                   <option value="6">Other</option>
                 </select><br/>
 
-                <label for="cost"><strong>Cost</strong></label>
-                <input class="form-control" type="number" id="cost" placeholder="Enter cost..."><br/>
+                <label for="updateExpenseCost"><strong>Cost</strong></label>
+                <input class="form-control" type="number" id="updateExpenseCost" placeholder="Enter cost..."><br/>
 
                 <!-- Submit button to add expense -->
                 <span>
                   <button class="btn btn-danger" id="button-submitUpdate" type="submit" onclick="doUpdate()">Submit</button>
                   <button class="btn btn-secondary" id="button-cancelUpdate" type="submit" onclick="cancelUpdate()">Cancel</button>
+                </span>
               </div>
+          </div>
+
+          <!-- Update budget table -->
+          <div class="card card-body" id="updateBudgetForm" style="display: none;">
+            <h4>Update Budget</h4>
+            <hr>
+            <div class="form-group">
+              <div>
+                  <table class="table" id="updateBudgetTable">
+                    <thead>
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Month</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Update Amount</th>
+                        <th scope="col">Update</th>
+                      </tr>
+                    </thead>
+                    <tbody id="updateBudgetTableBody"></tbody>
+                  </table>
+              </div>
+              <button class="btn btn-danger" id="button-cancelUpdateBuget" type="submit" onclick="cancelUpdateBudget()">Cancel</button>
+            </div>
           </div>
 
         </div>

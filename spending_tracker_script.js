@@ -4,23 +4,24 @@
             var table = document.getElementById("spendingTable");
             if (table.style.display === "none" || table.style.display === "") {
                 table.style.display = "table"; // Show the table if it's hidden
-                showViewTotalsBudget();
+                showViewTagsBudget();
                 showSearch();
+                clearSearch();
                 clearTable();
                 getAll(processGetResponse);
                 getAllTags(processGetTagResponse);
                 getBudget(processGetTotalBudgetResponse);
             } else {
+                clearSearch();
                 clearTable();
                 getAll(processGetResponse);
                 getAllTags(processGetTagResponse);
                 getBudget(processGetTotalBudgetResponse);
-                //table.style.display = "none"; // Hide the table if it's visible
             }
         }
-
+        // Show all spending button
         function showAllSpendingButton() {
-          document.getElementById("button-getAll").addEventListener("click", clearSearch(), showAllSpendingTable());
+          document.getElementById("button-getAll").addEventListener("click", showAllSpendingTable());
         }
 
         // Function to show monthly spending on button click
@@ -29,24 +30,27 @@
             var table = document.getElementById("spendingTable");
             if (table.style.display === "none" || table.style.display === "") {
                 table.style.display = "table"; // Show the table if it's hidden
-                showViewTotalsBudget();
+                showViewTagsBudget();
                 showSearch();
+                clearSearch();
                 clearTable();
                 getByMonth(month, processGetResponse);
                 getByMonthTags(month, processGetTagResponse);
                 getBudgetMonth(month, processGetBudgetResponse);
             } else {
+                clearSearch();
                 clearTable();
                 getByMonth(month, processGetResponse);
                 getByMonthTags(month, processGetTagResponse);
                 getBudgetMonth(month, processGetBudgetResponse);
             }
         }
+        // Show monthly spending button
         function showMonthlySpendingButton(month) {
-          document.getElementById("button-getMonthly").addEventListener("click", clearSearch(), showMonthlySpendingTable(month));
+          document.getElementById("button-getMonthly").addEventListener("click", showMonthlySpendingTable(month));
         }
 
-        // Function to clear the table
+        // Function to clear the spending, tag, and budget tables
         // https://codeforgeek.com/remove-all-rows-from-table-in-javascript/
         // https://www.youtube.com/watch?v=qBg8IB3u28s
         function clearTable() {
@@ -80,6 +84,7 @@
                 }
             }
         }
+
         // Function to clear the search input
         // https://www.geeksforgeeks.org/html-clearing-the-input-field/
         function clearSearch() {
@@ -97,25 +102,19 @@
             }
         }
 
-        // Function to display view totals button
-        function showViewTotalsBudget() {
-          var viewTotals = document.getElementById("button-viewTotalsBudget");
-          if (viewTotals.style.display === "none") {
-            viewTotals.style.display = "block";
+        // Function to display the secondary view tags, budget and balance buttons
+        function showViewTagsBudget() {
+          var viewTagsBudget = document.getElementById("button-viewTagsBudget");
+          if (viewTagsBudget.style.display === "none") {
+            viewTagsBudget.style.display = "block";
           } else {
-              viewTotals.style.display = "none";
+              viewTagsBudget.style.display = "none";
             }
         }
 
-        // Function to display add expense form
-        function showAddExpense() {
-           document.getElementById("spendingBody").style.display = "none";
-           document.getElementById("addExpenseForm").style.display = "block";
-        }
-
-        // function to process the get response and populate the spending table
+        // Function to process the getAll ajax call response and populate the spending table
         function processGetResponse(result) {
-            console.log("in process")
+            console.log("process getAll", result);
             for (expense of result){
                 displayExpense = {}
                 displayExpense.id = expense.id
@@ -123,29 +122,29 @@
                 displayExpense.description = expense.description
                 displayExpense.tag_name = expense.tag_name
                 displayExpense.cost = expense.cost 
-                addExpenseToTable(displayExpense)
+                addExpenseToTable(displayExpense);
             }
         }
 
-        // function to populate rows of the spending table
+        // Function to populate rows of the spending table
         function addExpenseToTable(expense) {
             // Add data rows to body of table
             // https://stackoverflow.com/a/18333693
             var tableBody = document.querySelector('#spendingTable tbody');
-            var rowElement = tableBody.insertRow(-1)
+            var rowElement = tableBody.insertRow(-1);
             
-            rowElement.setAttribute('id',expense.id)
+            rowElement.setAttribute('id',expense.id);
             
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = expense.id
             var cell2 = rowElement.insertCell(1);
-            cell2.innerHTML = expense.date.date.split(" 00:")[0] //https://www.geeksforgeeks.org/how-to-remove-time-from-date-using-javascript/
+            cell2.innerHTML = expense.date.date.split(" 00:")[0] // Format date for table. Ref: https://www.geeksforgeeks.org/how-to-remove-time-from-date-using-javascript/
             var cell3 = rowElement.insertCell(2);
             cell3.innerHTML = expense.description
             var cell4 = rowElement.insertCell(3);
             cell4.innerHTML = expense.tag_name
             var cell5 = rowElement.insertCell(4);
-            cell5.innerHTML = expense.cost.toLocaleString() //https://www.w3schools.com/jsref/jsref_tolocalestring_number.asp
+            cell5.innerHTML = expense.cost.toLocaleString() // Format cost for table. https://www.w3schools.com/jsref/jsref_tolocalestring_number.asp
             var cell6 = rowElement.insertCell(5);
             cell6.innerHTML = '<button class="btn btn-secondary" onclick="showUpdate(this)">Update</button>'
             var cell7 = rowElement.insertCell(6);
@@ -159,28 +158,27 @@
                   '<li><button class="dropdown-item" href="#">Cancel</button></li>'+
                 '</ul>'+
               '</div>'
-              //'<button class="btn btn-secondary" onclick="doDelete(this)">Delete</button>'
         }
         
-        // function to process the get tags response and populate the table
+        // Function to process the getAllTags ajax call response and populate the table
         function processGetTagResponse(result) {
-            console.log("in process", result)
+            console.log("process getAllTags", result);
             sum = 0
             for (tag of result){
                 displayTag = {}
                 displayTag.tag_name = tag.tag_name
                 displayTag.total_spending = tag.total_spending
                 addTagToTable(displayTag)
-                sum = sum + tag.total_spending
+                sum = sum + tag.total_spending;
             }
+            // Add total row to end of table
             total = {}
             total.tag_name = "Total"
             total.total_spending = sum
-            addTagToTable(total)
-            //document.getElementById('outputSpent').innerHTML = total.total_spending
+            addTagToTable(total);
         }
 
-        // function to populate rows of the tag table
+        // Function to populate rows of the tag table
         function addTagToTable(tag) {
             // Add data rows to body of table
             // https://stackoverflow.com/a/18333693
@@ -191,57 +189,139 @@
             cell1.innerHTML = tag.tag_name
             var cell2 = rowElement.insertCell(1);
             cell2.innerHTML = tag.total_spending.toLocaleString()
+            // Send total spending to outputSpent to calculate balance with view balance button
             document.getElementById('outputSpent').innerHTML = tag.total_spending
         }
 
-        // function to process the get budget response and populate the table
+        // Function to process the getBudgetMonth ajax call response and populate the table
         function processGetBudgetResponse(result) {
-            console.log("in process", result)
+            console.log("process getBudgetMonth", result)
             for (budget of result){
                 displayBudget = {}
                 displayBudget.budget_month = budget.budget_month
                 displayBudget.amount = budget.amount
-                addBudgetToTable(displayBudget)
+                addBudgetToTable(displayBudget);
             }
         }
 
-        // function to process the get total budget response and populate the table
+        // Function to process the getBudget ajax call response and populate the table
         function processGetTotalBudgetResponse(result) {
-            console.log("in process", result)
+            console.log("processGetBuget", result)
             sum = 0
             for (budget of result){
               sum = sum + budget.amount
             }
+            // Total budget for year
             total_budget = {}
             total_budget.budget_month = "Full Year"
             total_budget.amount = sum
             addBudgetToTable(total_budget)
-            //document.getElementById('outputBudget').innerHTML = total_budget.amount
-
         }
 
-        // function to populate rows of the budget table
+        // Function to populate rows of the budget table
         function addBudgetToTable(budget) {
-            // Add data rows to body of table
-            // https://stackoverflow.com/a/18333693
             var tableBody = document.querySelector('#budgetTable tbody');
-            var rowElement = tableBody.insertRow(-1)
+            var rowElement = tableBody.insertRow(-1);
 
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = budget.budget_month
             var cell2 = rowElement.insertCell(1);
             cell2.innerHTML = budget.amount.toLocaleString()
-            document.getElementById('outputBudget').innerHTML = budget.amount.toFixed(2)
+            // Send total budget to outputBudget to calculate balance with view balance button
+            document.getElementById('outputBudget').innerHTML = budget.amount
+        }
+
+        // Function to process the getBudget ajax call response and populate the update budget table
+        function processGetUpdateBudgetResponse(result) {
+            console.log("process getBudget for update table", result)
+            for (budget of result){
+                displayBudget = {}
+                displayBudget.budget_id = budget.budget_id
+                displayBudget.budget_month = budget.budget_month
+                displayBudget.amount = budget.amount
+                addUpdateBudgetToTable(displayBudget)
+            }
+        }
+
+        // Function to populate rows of the update budget table
+        function addUpdateBudgetToTable(budget) {
+            var tableBody = document.querySelector('#updateBudgetTable tbody');
+            var rowElement = tableBody.insertRow(-1);
+
+            rowElement.setAttribute('id',budget.budget_id)
+
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = budget.budget_id
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = budget.budget_month
+            var cell3 = rowElement.insertCell(2);
+            cell3.innerHTML = budget.amount.toLocaleString()
+            var cell4 = rowElement.insertCell(3);
+            cell4.innerHTML = '<input class="form-control" type="number" placeholder="Enter updated budget..."></input>'
+            var cell5 = rowElement.insertCell(4);
+            cell5.innerHTML = '<button class="btn btn-secondary" onclick="doBudgetUpdate(this)">Update</button>'
+        }
+        // Function to get updated budget from row
+        function getBudgetFromRow(rowElement) {
+            while (isNaN(parseFloat(rowElement.querySelector('input').value))) {
+              (alert("Input update amount"));
+              return;
+            }
+            var budget ={}
+            budget.budget_id  = rowElement.cells[0].firstChild.textContent
+            budget.budget_month = rowElement.cells[1].firstChild.textContent
+            budget.amount = parseFloat(rowElement.querySelector('input').value)
+            return budget;
+        }
+        // Function to update the budget
+        function doBudgetUpdate(buttonElement){
+            var rowElement = buttonElement.parentNode.parentNode;
+            var budget = getBudgetFromRow(rowElement);
+            if (budget === undefined) {
+              console.log("update amount not entered");
+              return;
+            } else {
+                console.log("updating budget", budget);
+                updateBudget(budget, doNothing);
+                cancelUpdateBudget();
+                showAllSpendingButton();
+                updateBudgetSuccessAlert();
+            }
+        }
+        
+        // Clear update budget table
+        function clearUpdateBudgetTable() {
+          document.querySelector('#updateBudgetTable tbody').innerHTML = ""
+        }
+
+        // Function to display update budget form
+        function showUpdateBudget() {
+           getBudget(processGetUpdateBudgetResponse);
+           document.getElementById("spendingBody").style.display = "none";
+           document.getElementById("updateBudgetForm").style.display = "block";
+        }
+
+        // Function to display hide budget form
+        function cancelUpdateBudget() {
+           document.getElementById("spendingBody").style.display = "block";
+           document.getElementById("updateBudgetForm").style.display = "none";
+           clearUpdateBudgetTable();
+        }
+
+        // Function for add expense button to display add expense form
+        function showAddExpense() {
+           document.getElementById("spendingBody").style.display = "none";
+           document.getElementById("addExpenseForm").style.display = "block";
         }
 
         // functions to create new expense
         function addExpenseForm() {
           var addExpenseForm = document.getElementById('addExpenseForm');
           var expense = {}
-        	expense.date = addExpenseForm.querySelector('input[id="date"]').value
-        	expense.description = addExpenseForm.querySelector('input[id="description"]').value
-        	expense.tag = parseInt(addExpenseForm.querySelector('select[id="tag"]').value)
-        	expense.cost = parseFloat(addExpenseForm.querySelector('input[id="cost"]').value)
+        	expense.date = addExpenseForm.querySelector('input[id="addExpenseDate"]').value
+        	expense.description = addExpenseForm.querySelector('input[id="addExpenseDescription"]').value
+        	expense.tag = parseInt(addExpenseForm.querySelector('select[id="addExpenseTag"]').value)
+        	expense.cost = parseFloat(addExpenseForm.querySelector('input[id="addExpenseCost"]').value)
         	console.log(JSON.stringify(expense))
           return expense
         }
@@ -276,10 +356,10 @@
         // Function to clear the add expense form
         function clearExpenseForm() {
           var addExpenseForm = document.getElementById('addExpenseForm');
-          addExpenseForm.querySelector('input[id="date"]').value = ""
-        	addExpenseForm.querySelector('input[id="description"]').value = ""
-        	addExpenseForm.querySelector('select[id="tag"]').value = "Choose tag..."
-        	addExpenseForm.querySelector('input[id="cost"]').value = ""
+          addExpenseForm.querySelector('input[id="addExpenseDate"]').value = ""
+        	addExpenseForm.querySelector('input[id="addExpenseDescription"]').value = ""
+        	addExpenseForm.querySelector('select[id="addExpenseTag"]').value = ""
+        	addExpenseForm.querySelector('input[id="addExpenseCost"]').value = ""
         }
 
         // Function to get remaining budget
@@ -303,7 +383,7 @@
           
           index = rowElement.rowIndex
           tableElement.deleteRow(index);
-          
+
         }
 
         // Default function for callback
@@ -365,23 +445,23 @@
         function getExpenseFromForm(){
           var form = document.getElementById('updateExpenseForm')
        	  var expense = {}
-        	expense.id = form.querySelector('input[id="id"]').value
-        	expense.date = form.querySelector('input[id="date"]').value
-        	expense.description = form.querySelector('input[id="description"]').value
-        	expense.tag = parseInt(form.querySelector('select[id="tag"]').value)
-          expense.cost = parseFloat(form.querySelector('input[id="cost"]').value)
+        	expense.id = form.querySelector('input[id="updateExpenseId"]').value
+        	expense.date = form.querySelector('input[id="updateExpenseDate"]').value
+        	expense.description = form.querySelector('input[id="updateExpenseDescription"]').value
+        	expense.tag = parseInt(form.querySelector('select[id="updateExpenseTag"]').value)
+          expense.cost = parseFloat(form.querySelector('input[id="updateExpenseCost"]').value)
         	//console.log(JSON.stringify(book))
             return expense
         }
 
         function populateFormWithExpense(expense){
        		var form = document.getElementById('updateExpenseForm')
-        	form.querySelector('input[id="id"]').disabled = true
-       		form.querySelector('input[id="id"]').value = expense.id
-       		form.querySelector('input[id="date"]').value = expense.date
-        	form.querySelector('input[id="description"]').value = expense.description
-          form.querySelector('select[id="tag"]').value = expense.tag
-          form.querySelector('input[id="cost"]').value = expense.cost
+        	form.querySelector('input[id="updateExpenseId"]').disabled = true
+       		form.querySelector('input[id="updateExpenseId"]').value = expense.id
+       		form.querySelector('input[id="updateExpenseDate"]').value = expense.date
+        	form.querySelector('input[id="updateExpenseDescription"]').value = expense.description
+          form.querySelector('select[id="updateExpenseTag"]').value = expense.tag
+          form.querySelector('input[id="updateExpenseCost"]').value = expense.cost
         }
 
         function getExpenseFromRow(rowElement) {
@@ -415,8 +495,6 @@
             }
             updateExpense(expense, processUpdateExpenseResult)
            
-            //showViewall()
-            //clearForm()
         }
 
         function processUpdateExpenseResult(result) {
@@ -432,6 +510,10 @@
 
         function updateExpenseSuccessAlert(){
             document.getElementById("updateExpenseSuccess").style.display = "block"
+        }
+
+        function updateBudgetSuccessAlert(){
+            document.getElementById("updateBudgetSuccess").style.display = "block"
         }
 
         function convertDate(date) {
@@ -458,4 +540,7 @@
 
           return (index + 1)
 
+        }
+        function returnHome() {
+          location.reload();
         }

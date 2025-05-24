@@ -106,7 +106,7 @@ function deleteExpense(id, callback) {
         "dataType": "JSON",
         "contentType": "application/json; charset=utf-8",
         "success": function(result) {
-            console.log(result);
+            console.log("delete expense success", result);
             callback(result)  
         },
         "error": function(xhr,status,error) {
@@ -123,7 +123,24 @@ function updateExpense(expense, callback) {
         "dataType": "JSON",
         "contentType": "application/json; charset=utf-8",
         "success": function(result) {
-            console.log(result);
+            console.log("update expense success", result);
+            callback(result)   
+        },
+        "error": function(xhr,status,error) {
+            console.log("error: "+status+" msg:"+error);
+        }
+    });
+}
+function updateBudget(budget, callback) {
+    console.log("updating: " +JSON.stringify(budget));
+    $.ajax({
+        "url": "http://127.0.0.1:5000/budget/"+ encodeURI(budget.budget_id),
+        "method": "PUT",
+        "data": JSON.stringify(budget),
+        "dataType": "JSON",
+        "contentType": "application/json; charset=utf-8",
+        "success": function(result) {
+            console.log("update budget success", result);
             callback(result)   
         },
         "error": function(xhr,status,error) {
