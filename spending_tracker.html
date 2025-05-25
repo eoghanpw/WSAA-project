@@ -13,29 +13,12 @@
     </head> 
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <!-- Home button -->
           <div class="container">
             <button class="btn btn-primary" id="button-home" onclick="returnHome()">Home</button>
           </div>
         </nav>
         <div class="container my-5">
-
-          <!-- New expense added alert -->
-          <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;" id="addExpenseSuccess">
-            <strong>New expense created!</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-
-          <!-- Expense updated added alert -->
-          <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;" id="updateExpenseSuccess">
-            <strong>Expense updated!</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-
-          <!-- Budget updated alert -->
-          <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;" id="updateBudgetSuccess">
-            <strong>Budget updated!</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
 
           <!-- Webpage heading and description -->
           <h1>Spending Tracker 2025</h1>
@@ -44,7 +27,7 @@
 
             <hr class="col-8 my-4">
 
-            <!-- start button -->
+            <!-- Start button -->
             <button type="button" class="btn btn-primary btn-lg" id="button-start" style="display: block;" onclick="showSpendingBody()">Let's get started!</button>
 
           </div>
@@ -53,7 +36,7 @@
             <div>
 
               <!-- Show all spending button -->
-              <button class="btn btn-primary" id="button-getAll" onclick="showAllSpendingButton()">Show All Spending</button>
+              <button class="btn btn-primary" id="button-getAll" onclick="showAllSpendingButton(), tableHeading(this)" value="All Spending">Show All Spending</button>
 
               <!-- Show monthly spending button -->
               <!-- Ref:https://getbootstrap.com/docs/5.3/components/dropdowns/ -->
@@ -61,18 +44,18 @@
                   Show Monthly Spending
               </button>
               <ul class="dropdown-menu">
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('January')">January</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('February')">February</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('March')">March</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('April')">April</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('May')">May</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('June')">June</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('July')">July</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('August')">August</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('September')">September</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('October')">October</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('November')">November</button></li>
-                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('December')">December</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('January'), tableHeading(this)" value="January">January</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('February'), tableHeading(this)" value="February">February</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('March'), tableHeading(this)" value="March">March</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('April'), tableHeading(this)" value="April">April</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('May'), tableHeading(this)" value="May">May</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('June'), tableHeading(this)" value="June">June</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('July'), tableHeading(this)" value="July">July</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('August'), tableHeading(this)" value="August">August</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('September'), tableHeading(this)" value="September">September</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('October'), tableHeading(this)" value="October">October</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('November'), tableHeading(this)" value="November">November</button></li>
+                  <li><button class="dropdown-item" id="button-getMonthly" onclick="showMonthlySpendingButton('December'), tableHeading(this)" value="December">December</button></li>
               </ul>
 
               <!-- Add expense button -->
@@ -110,11 +93,8 @@
               </ul>
 
             </div><br/>
-            <div>
-                <span id="outputBudget" style="display: none;"></span>
-                <span id="outputSpent" style="display: none;"></span>
-            </div>
 
+            <!-- View budget table-->
             <div class="collapse" id="viewBudget"> 
                   <table class="table" id="budgetTable">
                     <thead>
@@ -127,6 +107,7 @@
                   </table>
             </div>
 
+            <!-- View tags table -->
             <div class="collapse" id="viewTags"> 
                   <table class="table" id="tagTable">
                     <thead>
@@ -139,10 +120,18 @@
                   </table>
             </div>
 
+            <!-- Heading for spending table -->
             <div>
-              <input type="text" id="tableSearch" onkeyup="searchTable()" placeholder="Search table.." title="Start typing" style="display: none;">
+              <h4 id="tableHeading"></h4>
             </div>
 
+            <!-- Spending table search box -->
+            <div id="tableSearch" style="display: none;">
+              <hr>
+              <input type="text" onkeyup="searchTable()" placeholder="Search table.." title="Start typing">
+            </div>
+
+            <!-- Spending table -->
             <div>
               <table class="table" id="spendingTable" style="display: none;">
                   <thead>
@@ -256,7 +245,7 @@
           </div>
 
         </div>
-
+        <!-- Bootstap's JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
     </body>
     <script>
