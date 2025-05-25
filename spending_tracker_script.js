@@ -468,7 +468,7 @@ function processUpdateExpenseResult(result) {
   updatedExpense = getExpenseFromForm(result)
   cancelUpdate();
   showAllSpendingButton();
-  alert("Success! Expense updated.")
+  alert("Success! Expense updated")
 }
 // Function to hide update expense form
 function cancelUpdate(){

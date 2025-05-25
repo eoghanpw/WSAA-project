@@ -1,11 +1,11 @@
-# expenses_doa.py
+# spending_tracker_doa.py
 # MySQL Query Functions
 # Author: Eoghan Walsh
 
 # Import PyMySQL and config file
 import pymysql
 import pymysql.cursors
-from config import mysql as cfg
+from mysqlcfg import mysql as cfg
 
 
 # Function to connect to the mysql database

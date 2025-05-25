@@ -1,4 +1,4 @@
-# rest_server.py
+# spending_tracker_rest_server.py
 # Author: Eoghan Walsh
 
 from flask import Flask, request, jsonify
